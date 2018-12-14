@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/arodzaj/jparser/store"
 )
 
 const usageMessage = `usage: jsparser [-s][--file FILE][--watch][--version][--help] JSON_STRING
@@ -32,37 +30,28 @@ var (
 	fileArg  = flag.String("file", "", "")
 )
 
+// variables
+var (
+	space *store.Store
+)
+
 func run(js string) error {
+	space = store.New()
 
-	return nil
-}
-
-func getJSON() (string, error) {
-	stat, _ := os.Stdin.Stat()
-
-	if len(flag.Args()) == 1 {
-		// JSON passed as argument
-		return flag.Args()[0], nil
-
-	} else if *fileArg != "" {
-		// JSON passed as file path
-		return *fileArg, nil
-
-	} else if (stat.Mode() & os.ModeCharDevice) == 0 {
-		// JSON passed via pipeline
-		scanner := bufio.NewScanner(os.Stdin)
-		var buffer bytes.Buffer
-		for scanner.Scan() {
-			buffer.WriteString(scanner.Text())
-		}
-
-		return buffer.String(), nil
-	} else if *watchArg {
-		return "", nil
+	if js != "" {
+		space.Add(js)
 	}
 
-	return "", errors.New("Wrong parameters")
+	if *watchArg {
+		go func() {
 
+		}()
+	}
+
+	for {
+	}
+
+	return nil
 }
 
 func main() {
