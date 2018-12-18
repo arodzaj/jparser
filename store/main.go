@@ -9,7 +9,7 @@ import (
 type Store struct {
 	sync.Mutex
 
-	jsons []json
+	files []json
 	cur   int // cursor
 }
 
@@ -33,7 +33,7 @@ func (s *Store) Get(id int) (string, error) {
 		return "", errors.New("Index out of range")
 	}
 
-	return s.jsons[id].String(), nil
+	return s.files[id].String(), nil
 }
 
 func (s *Store) Add(js string) int {
@@ -41,8 +41,8 @@ func (s *Store) Add(js string) int {
 	var id int
 
 	s.Lock()
-	s.jsons = append(s.jsons, j)
-	id = len(s.jsons) - 1
+	s.files = append(s.files, j)
+	id = len(s.files) - 1
 	s.Unlock()
 
 	return id
