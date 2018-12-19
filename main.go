@@ -48,9 +48,6 @@ func run(js string) error {
 		}()
 	}
 
-	for {
-	}
-
 	return nil
 }
 
