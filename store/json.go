@@ -1,23 +1,42 @@
 package store
 
-type json struct {
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"time"
+
+	log "github.com/Sirupsen/logrus"
+)
+
+type File struct {
+	Ext  string
+	Root Element
+	Name string
+	Date time.Time
 }
 
-func (j *json) String() string {
+func (f *File) String() string {
 	return ""
 }
 
-type Element interface {
-	String() string
-	Parent() *Element
-	Value() string
-	Type() string // leaf, array, object
+func (f *File) Init(body, ext string) error {
+	if ext != "json" {
+		return errors.New("Not supported file type")
+	}
 
-	Childs() map[string]Element
+	f.Ext = ext
+
+	b := []byte(body)
+	buffer := map[string]interface{}{}
+	if err := json.Unmarshal(b, &buffer); err != nil {
+		log.Error(err)
+		return errors.New("Unable to parse file")
+	}
+
+	f.Root = parse(buffer, nil)
+
+	fmt.Print(f.Root.String())
+
+	return nil
 }
-
-// type Element struct {
-// 	elType int
-// 	value  string
-// 	level  int
-// }

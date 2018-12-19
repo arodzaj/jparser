@@ -3,13 +3,15 @@ package store
 import (
 	"errors"
 	"sync"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // Store - main store type
 type Store struct {
 	sync.Mutex
 
-	files []json
+	files []File
 	cur   int // cursor
 }
 
@@ -36,12 +38,17 @@ func (s *Store) Get(id int) (string, error) {
 	return s.files[id].String(), nil
 }
 
-func (s *Store) Add(js string) int {
-	j := parseJS(js)
+func (s *Store) Add(body string) int {
+	f := File{}
+
+	if err := f.Init(body, "json"); err != nil {
+		log.Panic("Unable to parse file")
+	}
+
 	var id int
 
 	s.Lock()
-	s.files = append(s.files, j)
+	s.files = append(s.files, f)
 	id = len(s.files) - 1
 	s.Unlock()
 
