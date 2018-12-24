@@ -37,6 +37,7 @@ func Parse(data interface{}) Node {
 type Node interface {
 	Type() string
 	Value() string
+	Child(key interface{}) Node
 }
 
 // Leaf -
@@ -54,8 +55,14 @@ func (l *Leaf) Value() string {
 	return l.value
 }
 
+// Child -
+func (l *Leaf) Child(key interface{}) Node {
+	return nil
+}
+
 // List -
 type List struct {
+	childs []Node
 }
 
 // Type -
@@ -68,8 +75,15 @@ func (l *List) Value() string {
 	return ""
 }
 
+// Child -
+func (l *List) Child(key interface{}) Node {
+	k := key.(int)
+	return l.childs[k]
+}
+
 // Branch -
 type Branch struct {
+	childs map[string]interface{}
 }
 
 // Type -
@@ -80,4 +94,10 @@ func (b *Branch) Type() string {
 // Value -
 func (b *Branch) Value() string {
 	return ""
+}
+
+// Child -
+func (b *Branch) Child(key interface{}) Node {
+	k := key.(string)
+	return b.childs[k].(Node)
 }

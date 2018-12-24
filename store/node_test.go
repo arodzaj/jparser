@@ -48,8 +48,8 @@ func TestParsingValue(t *testing.T) {
 	for _, test := range tests {
 		var buff interface{}
 		json.Unmarshal([]byte(test.input), &buff)
-		parsed := Parse(buff)
-		assert.Equal(parsed.Value(), test.value)
+		node := Parse(buff)
+		assert.Equal(node.Value(), test.value)
 	}
 }
 
@@ -61,5 +61,7 @@ func TestParsingReccuring(t *testing.T) {
 
 	node := Parse(buff)
 	assert.Equal(node.Type(), "branch")
+
+	node.Child("a")
 
 }
