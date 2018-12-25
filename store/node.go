@@ -1,24 +1,20 @@
 package store
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
-// Parse -
+// Parse function transforms json into structure
+// If passed object is not a leaf, the function calls itself
+// for each branch.
+// It returns a branch object that implementing Node interface
 func Parse(data interface{}) Node {
 
 	switch data.(type) {
-	case string:
+	case string, bool, float64:
 		l := new(Leaf)
-		l.value = data.(string)
-		return l
-
-	case bool:
-		l := new(Leaf)
-		l.value = strconv.FormatBool(data.(bool))
-		return l
-
-	case float64:
-		l := new(Leaf)
-		l.value = strconv.FormatFloat(data.(float64), 'f', -1, 64)
+		l.value = data
 		return l
 
 	case []interface{}:
@@ -36,13 +32,14 @@ func Parse(data interface{}) Node {
 // Node -
 type Node interface {
 	Type() string
-	Value() string
+	String() string
 	Child(key interface{}) Node
+	// Iter() <-chan Node
 }
 
 // Leaf -
 type Leaf struct {
-	value string
+	value interface{}
 }
 
 // Type -
@@ -50,9 +47,20 @@ func (l *Leaf) Type() string {
 	return "leaf"
 }
 
-// Value -
-func (l *Leaf) Value() string {
-	return l.value
+// String
+func (l *Leaf) String() string {
+	switch l.value.(type) {
+	case string:
+		return l.value.(string)
+
+	case float64:
+		return strconv.FormatFloat(l.value.(float64), 'f', -1, 64)
+
+	case bool:
+		return strconv.FormatBool(l.value.(bool))
+	}
+
+	return ""
 }
 
 // Child -
@@ -70,8 +78,8 @@ func (l *List) Type() string {
 	return "list"
 }
 
-// Value -
-func (l *List) Value() string {
+// String -
+func (l *List) String() string {
 	return ""
 }
 
@@ -91,9 +99,13 @@ func (b *Branch) Type() string {
 	return "branch"
 }
 
-// Value -
-func (b *Branch) Value() string {
-	return ""
+// String
+func (b *Branch) String() string {
+	n := 0
+	for range b.childs {
+		n++
+	}
+	return fmt.Sprintf("<type:branch, childs:%d>", n)
 }
 
 // Child -
