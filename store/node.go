@@ -1,3 +1,4 @@
+// Package store provides primitives and logic of loaded JSON files
 package store
 
 import (
@@ -19,17 +20,28 @@ func Parse(data interface{}) Node {
 
 	case []interface{}:
 		a := new(List)
+
+		a.childs = []Node{}
+		for _, value := range data.([]interface{}) {
+			a.childs = append(a.childs, Parse(value))
+		}
+
 		return a
 
 	case map[string]interface{}:
 		a := new(Branch)
-		return a
 
+		a.childs = map[string]Node{}
+		for k, value := range data.(map[string]interface{}) {
+			a.childs[k] = Parse(value)
+		}
+
+		return a
 	}
 	return nil
 }
 
-// Node -
+// Node interface respresents abstraction a node in JSON tree
 type Node interface {
 	Type() string
 	String() string
@@ -80,7 +92,7 @@ func (l *List) Type() string {
 
 // String -
 func (l *List) String() string {
-	return ""
+	return fmt.Sprintf("<type:list, childs:%d>", len(l.childs))
 }
 
 // Child -
@@ -91,7 +103,7 @@ func (l *List) Child(key interface{}) Node {
 
 // Branch -
 type Branch struct {
-	childs map[string]interface{}
+	childs map[string]Node
 }
 
 // Type -
