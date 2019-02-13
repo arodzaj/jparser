@@ -10,23 +10,16 @@ import (
 )
 
 type File struct {
-	Ext  string
 	Root Node
 	Name string
 	Date time.Time
 }
 
 func (f *File) String() string {
-	return ""
+	return fmt.Sprintf("<name:%s, date:%s>", f.Name, f.Date)
 }
 
-func (f *File) Init(body, ext string) error {
-	if ext != "json" {
-		return errors.New("Not supported file type")
-	}
-
-	f.Ext = ext
-
+func (f *File) Init(body, name string) error {
 	b := []byte(body)
 	buffer := map[string]interface{}{}
 	if err := json.Unmarshal(b, &buffer); err != nil {
@@ -35,8 +28,8 @@ func (f *File) Init(body, ext string) error {
 	}
 
 	f.Root = Parse(buffer)
-
-	fmt.Print(f.Root.String())
+	f.Date = time.Now()
+	f.Name = name
 
 	return nil
 }

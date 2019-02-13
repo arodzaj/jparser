@@ -22,3 +22,16 @@ func getNode(path string, root Node) Node {
 
 	return cur
 }
+
+func countNodes(n Node, count int) int {
+	cnt := 0
+	for _, key := range n.ChildKeys() {
+		cnt += n.Child(key)
+	}
+
+	return count + cnt
+}
+
+func CountNodes(root Node) int {
+	return countNodes(root, 0)
+}
