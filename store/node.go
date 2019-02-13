@@ -11,7 +11,7 @@ type Node interface {
 	Type() string
 	String() string
 	Child(key interface{}) Node
-	// Iter() <-chan Node
+	ChildKeys() []string
 }
 
 // Leaf -
@@ -43,6 +43,10 @@ func (l *Leaf) String() string {
 // Child -
 func (l *Leaf) Child(key interface{}) Node {
 	return nil
+}
+
+func (l *Leaf) ChildKeys() []string {
+	return []string{}
 }
 
 // List -
@@ -81,6 +85,16 @@ func (l *List) Child(key interface{}) Node {
 
 }
 
+func (l *List) ChildKeys() []string {
+	res := []string{}
+
+	for i := range l.childs {
+		res = append(res, strconv.Itoa(i))
+	}
+
+	return res
+}
+
 // Branch -
 type Branch struct {
 	childs map[string]Node
@@ -110,4 +124,14 @@ func (b *Branch) Child(key interface{}) Node {
 
 	return nil
 
+}
+
+func (b *Branch) ChildKeys() []string {
+	res := []string{}
+
+	for k := range b.childs {
+		res = append(res, k)
+	}
+
+	return res
 }

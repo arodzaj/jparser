@@ -68,14 +68,23 @@ func TestChild(t *testing.T) {
 	assert.Equal("c", node.Child(2).String())
 }
 
-func TestParsingIter(t *testing.T) {
+func TestParsingChildKeys(t *testing.T) {
 	assert := assert.New(t)
-	js := `{"obj": {"a":1, "b":2}}`
+	js := `{"a":1, "b":2, "c":3, "d":4}`
 	var buff interface{}
 	json.Unmarshal([]byte(js), &buff)
 
-	node := Parse(buff)
-	assert.Equal(node.Type(), "branch")
+	root := Parse(buff)
+	for _, key := range root.ChildKeys() {
+		assert.NotNil(root.Child(key))
+	}
 
-	node.Child("a")
+	js = `[1,2,3,4,5,6,7,8,9]`
+	json.Unmarshal([]byte(js), &buff)
+
+	root = Parse(buff)
+	for _, key := range root.ChildKeys() {
+		assert.NotNil(root.Child(key))
+	}
+
 }
