@@ -34,7 +34,7 @@ func (f *File) Init(body, ext string) error {
 		return errors.New("Unable to parse file")
 	}
 
-	f.Root = parse(buffer, nil)
+	f.Root = Parse(buffer)
 
 	fmt.Print(f.Root.String())
 
