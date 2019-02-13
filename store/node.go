@@ -62,7 +62,16 @@ func (l *List) String() string {
 
 // Child -
 func (l *List) Child(key interface{}) Node {
-	k := key.(int)
+	var k int
+	switch key.(type) {
+	case int:
+		k = key.(int)
+		break
+	case string:
+		k, _ = strconv.Atoi(key.(string))
+		break
+
+	}
 
 	if k < len(l.childs) {
 		return l.childs[k].(Node)
