@@ -25,7 +25,7 @@ func TestParsingTypes(t *testing.T) {
 	for _, test := range tests {
 		var buff interface{}
 		json.Unmarshal([]byte(test.input), &buff)
-		parsed := Parse(buff)
+		parsed := parse(buff)
 		assert.Equal(parsed.Type(), test.expected)
 	}
 }
@@ -48,7 +48,7 @@ func TestParsingString(t *testing.T) {
 	for _, test := range tests {
 		var buff interface{}
 		json.Unmarshal([]byte(test.input), &buff)
-		node := Parse(buff)
+		node := parse(buff)
 		assert.Equal(node.String(), test.expected)
 	}
 }
@@ -59,12 +59,12 @@ func TestChild(t *testing.T) {
 	js := `{"a":1, "b":2}`
 	var buff interface{}
 	json.Unmarshal([]byte(js), &buff)
-	node := Parse(buff)
+	node := parse(buff)
 	assert.Equal("1", node.Child("a").String())
 
 	js = `["a","b","c","d"]`
 	json.Unmarshal([]byte(js), &buff)
-	node = Parse(buff)
+	node = parse(buff)
 	assert.Equal("c", node.Child(2).String())
 }
 
@@ -74,7 +74,7 @@ func TestParsingIter(t *testing.T) {
 	var buff interface{}
 	json.Unmarshal([]byte(js), &buff)
 
-	node := Parse(buff)
+	node := parse(buff)
 	assert.Equal(node.Type(), "branch")
 
 	node.Child("a")

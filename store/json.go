@@ -11,7 +11,7 @@ import (
 
 type File struct {
 	Ext  string
-	Root Element
+	Root Node
 	Name string
 	Date time.Time
 }
