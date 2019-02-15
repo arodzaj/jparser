@@ -41,7 +41,7 @@ func (s *Store) Get(id int) (string, error) {
 func (s *Store) Add(body string) int {
 	f := File{}
 
-	if err := f.Init(body, "json"); err != nil {
+	if err := f.Init(body, ""); err != nil {
 		log.Panic("Unable to parse file")
 	}
 

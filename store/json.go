@@ -16,7 +16,7 @@ type File struct {
 }
 
 func (f *File) String() string {
-	return fmt.Sprintf("<name:%s, date:%s>", f.Name, f.Date)
+	return fmt.Sprintf("<name:%s, date:%s, leaves:%d>", f.Name, f.Date, CountLeaves(f.Root))
 }
 
 func (f *File) Init(body, name string) error {

@@ -1,6 +1,8 @@
 package store
 
-import "strings"
+import (
+	"strings"
+)
 
 func getNode(path string, root Node) Node {
 	p := strings.Split(path, ".")
@@ -23,15 +25,15 @@ func getNode(path string, root Node) Node {
 	return cur
 }
 
-func countNodes(n Node, count int) int {
-	cnt := 0
-	for _, key := range n.ChildKeys() {
-		cnt += n.Child(key)
+func CountLeaves(n Node) int {
+	if n.Type() == "leaf" {
+		return 1
 	}
 
-	return count + cnt
-}
+	cnt := 0
+	for _, key := range n.ChildKeys() {
+		cnt += CountLeaves(n.Child(key))
+	}
 
-func CountNodes(root Node) int {
-	return countNodes(root, 0)
+	return cnt
 }
